@@ -48,6 +48,10 @@ input:focus {
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
 }
 
+
+.hidden {
+  display: none;
+}
 .app {
   max-width: 560px;
   min-height: 100vh;
