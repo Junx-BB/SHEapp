@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="320" viewBox="0 0 320 320">
+  <rect width="320" height="320" fill="#f8fafc"/>
+  <rect x="80" y="68" width="160" height="160" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="7 7"/>
+  <text x="160" y="158" text-anchor="middle" font-size="18" fill="#64748b" font-family="sans-serif">收款码图片</text>
+  <text x="160" y="190" text-anchor="middle" font-size="14" fill="#94a3b8" font-family="sans-serif">请在设置中上传</text>
+</svg>

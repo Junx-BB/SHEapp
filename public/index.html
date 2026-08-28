@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>服装店积分收银系统</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+  <div class="app">
+    <main id="view-home" class="view active">
+      <header class="topbar">
+        <div>
+          <h1 id="storeName">服装店</h1>
+          <p id="todayLabel"></p>
+        </div>
+        <button class="icon-btn" id="settingsBtn" title="设置">设置</button>
+      </header>
+
+      <section class="panel scan-panel">
+        <div class="qr-box">
+          <img id="qrImg" alt="顾客扫码登记二维码">
+          <p id="qrUrl" class="qr-url"></p>
+        </div>
+        <p class="panel-hint">顾客用微信扫描二维码，在自己手机上填写手机号</p>
+      </section>
+
+      <section class="panel list-panel">
+        <div class="section-head">
+          <h2>今日到店客人</h2>
+          <button class="text-btn" id="homeRefreshBtn">刷新</button>
+        </div>
+        <div id="homeVisits" class="list-block"></div>
+      </section>
+    </main>
+
+    <main id="view-today" class="view">
+      <header class="topbar">
+        <div>
+          <h1>今日记录</h1>
+          <p id="todayDateLabel"></p>
+        </div>
+        <button class="icon-btn" id="todayRefreshBtn" title="刷新">刷新</button>
+      </header>
+
+      <section class="stats-grid" id="todayStats"></section>
+
+      <section class="panel list-panel">
+        <div class="section-head"><h2>今日订单</h2></div>
+        <div id="todayOrders" class="list-block"></div>
+      </section>
+    </main>
+
+    <main id="view-customers" class="view">
+      <header class="topbar">
+        <div>
+          <h1>客户查询</h1>
+          <p>输入手机号查找客人</p>
+        </div>
+      </header>
+
+      <section class="panel search-panel">
+        <div class="search-row">
+          <input id="customerSearchInput" inputmode="numeric" placeholder="输入完整或部分手机号" maxlength="15">
+          <button class="primary-btn" id="customerSearchBtn">查找</button>
+        </div>
+        <div id="customerResults" class="list-block"></div>
+      </section>
+    </main>
+
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-view="home">待客</button>
+      <button class="nav-btn" data-view="today">今日</button>
+      <button class="nav-btn" data-view="customers">客户</button>
+    </nav>
+  </div>
+
+  <section class="screen hidden" id="workbench">
+    <header class="work-header">
+      <button class="ghost-btn" id="workbenchBackBtn">返回</button>
+      <div class="work-title">
+        <h2 id="wbPhone"></h2>
+        <p id="wbMeta"></p>
+      </div>
+    </header>
+    <div class="work-body">
+      <section class="stats-grid" id="wbStats"></section>
+
+      <section class="panel" id="referralSection">
+        <div class="section-head"><h2>老客带新人</h2></div>
+        <p class="panel-hint">这是该客人第一次消费，可绑定一位老客，双方同得本次积分</p>
+        <div class="search-row">
+          <input id="refPhoneInput" inputmode="numeric" placeholder="输入老客手机号" maxlength="15">
+          <button class="ghost-btn" id="refSearchBtn">查找</button>
+        </div>
+        <div id="refResults" class="list-block"></div>
+        <div id="refSelected" class="selected-box hidden">
+          <span id="refSelectedText"></span>
+          <button class="text-btn" id="refChangeBtn">更换</button>
+        </div>
+      </section>
+
+      <section class="panel checkout-panel">
+        <div class="section-head"><h2>结账</h2></div>
+        <label class="field-label" for="amountInput">应收金额（元）</label>
+        <input id="amountInput" class="money-input" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0.00">
+        <label class="field-label" for="pointsInput">本次抵扣积分</label>
+        <input id="pointsInput" class="money-input" type="number" inputmode="numeric" min="0" step="1" placeholder="0">
+        <div class="calc-row">
+          <span>实付金额</span>
+          <strong id="payableText">0.00 元</strong>
+        </div>
+        <button class="primary-btn big-btn" id="payBtn" disabled>显示收款码</button>
+      </section>
+
+      <section class="panel list-panel">
+        <div class="section-head"><h2>消费历史</h2></div>
+        <div id="historyList" class="list-block"></div>
+      </section>
+    </div>
+  </section>
+
+  <div class="modal-backdrop hidden" id="paymentModal">
+    <div class="modal">
+      <div class="qr-tabs">
+        <button class="qr-tab active" data-qrtype="wechat">微信收款</button>
+        <button class="qr-tab" data-qrtype="alipay">支付宝收款</button>
+      </div>
+      <p class="pay-amount">实收 <strong id="payAmountText"></strong></p>
+      <div class="pay-qr-box">
+        <img id="payQrImg" alt="收款码" src="/qr-placeholder.svg">
+      </div>
+      <p class="panel-hint">顾客付款完成后，店员点击确认</p>
+      <div class="modal-actions">
+        <button class="ghost-btn" id="cancelPayBtn">取消</button>
+        <button class="primary-btn" id="confirmPayBtn">确认已收款</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="successModal">
+    <div class="modal success-modal">
+      <h2>收款完成</h2>
+      <div class="success-line">本次实付 <strong id="successPaid"></strong></div>
+      <div class="success-line">本次获得 <strong id="successPoints"></strong></div>
+      <div class="success-line">剩余可用积分 <strong id="successRemaining"></strong></div>
+      <button class="primary-btn" id="successCloseBtn">好的</button>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="voidModal">
+    <div class="modal">
+      <h2>撤销这笔订单？</h2>
+      <p class="panel-hint" id="voidHint"></p>
+      <div class="modal-actions">
+        <button class="ghost-btn" id="cancelVoidBtn">取消</button>
+        <button class="danger-btn" id="confirmVoidBtn">确认撤销</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="settingsModal">
+    <div class="modal">
+      <h2>设置</h2>
+      <label class="field-label" for="storeNameInput">店铺名称</label>
+      <input id="storeNameInput" maxlength="20" placeholder="服装店">
+      <button class="ghost-btn full-btn" id="saveStoreNameBtn">保存店铺名称</button>
+
+      <div class="section-head"><h2>收款码图片</h2></div>
+      <label class="field-label" for="wechatUpload">微信收款码</label>
+      <div class="upload-row">
+        <img id="wechatPreview" class="qr-preview" alt="微信收款码预览" src="/qr-placeholder.svg">
+        <input id="wechatUpload" type="file" accept="image/png,image/jpeg,image/webp" data-qrtype="wechat">
+      </div>
+      <label class="field-label" for="alipayUpload">支付宝收款码</label>
+      <div class="upload-row">
+        <img id="alipayPreview" class="qr-preview" alt="支付宝收款码预览" src="/qr-placeholder.svg">
+        <input id="alipayUpload" type="file" accept="image/png,image/jpeg,image/webp" data-qrtype="alipay">
+      </div>
+      <div class="modal-actions">
+        <button class="primary-btn full-btn" id="settingsCloseBtn">完成</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast hidden" id="toast"></div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

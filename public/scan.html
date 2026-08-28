@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>到店登记</title>
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="scan-body">
+  <div class="scan-card">
+    <div class="scan-brand">
+      <h1 id="scanStoreName">服装店</h1>
+      <p>到店扫码登记</p>
+    </div>
+    <form id="scanForm" class="scan-form">
+      <label class="field-label" for="scanPhone">请输入手机号</label>
+      <input id="scanPhone" inputmode="numeric" autocomplete="tel" maxlength="15" placeholder="手机号" required>
+      <button class="primary-btn big-btn" type="submit">确认登记</button>
+      <p class="panel-hint">请使用本次消费本人手机号，下次到店继续使用同一手机号</p>
+    </form>
+    <div id="scanSuccess" class="scan-success hidden">
+      <h2 id="scanMessage"></h2>
+      <p id="scanPhoneText"></p>
+      <button class="primary-btn big-btn" id="scanAgainBtn">再登记一位</button>
+    </div>
+  </div>
+  <script src="/js/scan.js"></script>
+</body>
+</html>

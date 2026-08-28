@@ -1,0 +1,12 @@
+{
+  "name": "she-store-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "服装店积分收银系统第一版",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}
